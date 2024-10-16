@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenCvSharp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,10 @@ namespace AutoKitTest.Lib
         public string Path { get; set; }
         public double Threshold { get; set; }
 
+        public bool? IsMatched { get; set; }
+
+        public OpenCvSharp.Point Location { get; set; }
+        public OpenCvSharp.Size Size { get; set; }
         public int RectAngle_X { get; set; }
         public int RectAngle_Y { get; set; }
         public int RectAngle_Width { get; set; }

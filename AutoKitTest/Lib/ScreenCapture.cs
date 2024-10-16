@@ -60,7 +60,7 @@ namespace AutoKitTest.Lib
         {
             Bitmap result = null;
             nint desktopDC = GetDC(nint.Zero);
-            using (Bitmap bitmap = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height))
+            using (Bitmap bitmap = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, PixelFormat.Format32bppRgb))
             using (Graphics g = Graphics.FromImage(bitmap))
             {
                 nint srcDC = g.GetHdc();

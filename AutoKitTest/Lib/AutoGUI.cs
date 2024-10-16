@@ -21,6 +21,58 @@ namespace AutoKitTest.Lib
             }
         }
 
+        public List<ImageItem> LocateOnScreen(ImageItem[] tmplImageItems)
+        {
+            List<ImageItem> list = new();
+
+
+            using (Bitmap screenCapture = ScreenCapture.FullScreen())
+            using (Mat screen = BitmapConverter.ToMat(screenCapture))
+            {
+                foreach (var imageItem in tmplImageItems)
+                {
+                    using (Mat template = new(imageItem.Path, ImreadModes.Unchanged))
+                    using (Mat result = new())
+                    {
+                        Cv2.MatchTemplate(screen, template, result, TemplateMatchModes.CCoeffNormed);
+                        OpenCvSharp.Point minLoc, maxLoc;
+                        double minVal, maxVal;
+                        Cv2.MinMaxLoc(result, out minVal, out maxVal, out minLoc, out maxLoc);
+
+                        if (maxVal >= imageItem.Threshold)
+                        {
+                            imageItem.Location = maxLoc;
+                            imageItem.Size = template.Size();
+
+                            imageItem.RectAngle_X = maxLoc.X;
+                            imageItem.RectAngle_Y = maxLoc.Y;
+                            imageItem.RectAngle_Width = template.Width;
+                            imageItem.RectAngle_Height = template.Height;
+
+
+
+                            screen.Rectangle(new Rect(maxLoc, template.Size()), Scalar.Lime, 2);
+                            screen.PutText(imageItem.Name, maxLoc, HersheyFonts.HersheyDuplex, 1, Scalar.Lime);
+                            screen.SaveImage(_tempScreenCapturePath);
+                        }
+                    }
+                    list.Add(imageItem);
+                }
+
+                foreach (var imageItem in list)
+                {
+                    screen.Rectangle(new Rect(imageItem.Location, imageItem.Size), Scalar.Lime, 2);
+                    screen.PutText(imageItem.Name, imageItem.Location, HersheyFonts.HersheyDuplex, 1, Scalar.Lime);
+                }
+                screen.SaveImage(_tempScreenCapturePath);
+            }
+
+
+
+
+            return list;
+        }
+
         public bool LocateOnScreenFromImageItems(ImageItem[] tmplImageItems, out ImageItem[] results)
         {
             List<ImageItem> list = new();
@@ -44,7 +96,6 @@ namespace AutoKitTest.Lib
                             imageItem.RectAngle_Y = maxLoc.Y;
                             imageItem.RectAngle_Width = template.Width;
                             imageItem.RectAngle_Height = template.Height;
-
 
                             screen.Rectangle(new Rect(maxLoc, template.Size()), Scalar.Lime, 2);
                             screen.PutText(imageItem.Name, maxLoc, HersheyFonts.HersheyDuplex, 1, Scalar.Lime);
