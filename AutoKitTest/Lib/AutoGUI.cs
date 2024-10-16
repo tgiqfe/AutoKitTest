@@ -21,16 +21,16 @@ namespace AutoKitTest.Lib
             }
         }
 
-        public bool LocateOnScreen(string[] templateImagePaths)
+        public bool LocateOnScreenFromImageItems(ImageItem[] tmplImageItems, out ImageItem[] results)
         {
-            
+            List<ImageItem> list = new();
+
             using (Bitmap screenCapture = ScreenCapture.FullScreen())
             using (Mat screen = BitmapConverter.ToMat(screenCapture))
             {
-                double threshold = 0.99;
-                foreach (var imagePath in templateImagePaths)
+                foreach (var imageItem in tmplImageItems)
                 {
-                    using (Mat template = new Mat(imagePath, ImreadModes.Unchanged))
+                    using (Mat template = new Mat(imageItem.Path, ImreadModes.Unchanged))
                     using (Mat result = new Mat())
                     {
                         Cv2.MatchTemplate(screen, template, result, TemplateMatchModes.CCoeffNormed);
@@ -38,11 +38,24 @@ namespace AutoKitTest.Lib
                         double minVal, maxVal;
                         Cv2.MinMaxLoc(result, out minVal, out maxVal, out minLoc, out maxLoc);
 
-                        return maxVal >= threshold;
+                        if (maxVal >= imageItem.Threshold)
+                        {
+                            imageItem.RectAngle_X = maxLoc.X;
+                            imageItem.RectAngle_Y = maxLoc.Y;
+                            imageItem.RectAngle_Width = template.Width;
+                            imageItem.RectAngle_Height = template.Height;
+
+
+                            screen.Rectangle(new Rect(maxLoc, template.Size()), Scalar.Lime, 2);
+                            screen.PutText(imageItem.Name, maxLoc, HersheyFonts.HersheyDuplex, 1, Scalar.Lime);
+                            screen.SaveImage(_tempScreenCapturePath);
+                        }
                     }
+                    list.Add(imageItem);
                 }
             }
 
+            results = list.ToArray();
             return false;
         }
     }
