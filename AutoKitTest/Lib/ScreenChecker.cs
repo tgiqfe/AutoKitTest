@@ -38,23 +38,18 @@ namespace AutoKitTest.Lib
         {
             using (Mat screen = BitmapConverter.ToMat(_screenCapture))
             {
-                if (screen.Depth() != MatType.CV_8UC3)
-                {
-                    screen.ConvertTo(screen, MatType.CV_8UC3);
-                }
-
                 foreach (var imageItem in _templateImageItems)
                 {
                     using (Mat template = new(imageItem.Path, ImreadModes.Unchanged))
                     using (Mat result = new Mat())
                     {
-                        if (template.Depth() != MatType.CV_8UC3)
-                        {
-                            template.ConvertTo(template, MatType.CV_8UC3);
-                        }
                         if (template.Type() == MatType.CV_8UC4)
                         {
                             Cv2.CvtColor(template, template, ColorConversionCodes.BGRA2BGR);
+                        }
+                        if (template.Depth() != MatType.CV_8UC3)
+                        {
+                            template.ConvertTo(template, MatType.CV_8UC3);
                         }
 
                         Console.WriteLine($"Template Depth: {template.Depth()}, Type: {template.Type()}");
@@ -80,8 +75,11 @@ namespace AutoKitTest.Lib
                 {
                     foreach (var imageItem in _templateImageItems)
                     {
-                        screen.Rectangle(new Rect(imageItem.Location, imageItem.Size), Scalar.Lime, 2);
-                        screen.PutText(imageItem.Name, imageItem.Location, HersheyFonts.HersheyDuplex, 1, Scalar.Lime);
+                        if (imageItem.IsMatched == true)
+                        {
+                            screen.Rectangle(new Rect(imageItem.Location, imageItem.Size), Scalar.Lime, 2);
+                            screen.PutText(imageItem.Name, imageItem.Location, HersheyFonts.HersheyDuplex, 1, Scalar.Lime);
+                        }
                     }
                     screen.SaveImage(_outputCheckedFilePath);
                 }

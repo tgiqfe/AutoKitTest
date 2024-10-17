@@ -1,28 +1,47 @@
-﻿
+﻿using AutoKitTest.Lib;
+using AutoKitTest.Lib.Manifest;
+using AutoKitTest.Lib.Yaml;
+using System.Text.Json;
+using YamlDotNet.Serialization;
 
-using AutoKitTest.Lib;
 
-var list = new List<ImageItem>() {
-    new()
+TestFlows2 flow = new TestFlows2()
+{
+    Name = "TestFlow",
+    Description = "Test Flow Description",
+    Commands = new Dictionary<string, TestCommand2>()
     {
-        Path = @"E:\Test\Images\001.jpg",
-        Threshold = 0.95,
-    },
-    new()
-    {
-        Path = @"E:\Test\Images\002.png",
-        Threshold = 0.95,
-    },
-    new()
-    {
-        Path = @"E:\Test\Images\003.jpg",
-        Threshold = 0.95,
+        {
+            "起動チェック [ImageCheck]",
+            new TestCommand2()
+            {
+                Name = "Command1",
+                Threshould = 0.98,
+                ImageCheckInterval = 1000,
+                ImageCheckTimeout = 10000,
+                Fomula = "{lt} && {lb} && {rt} && {rb}",
+                ImageCheck = new List<string>()
+                {
+                    @"lt, D:\Test\template\images\lt01.jpg, 0.99",
+                    @"lb, D:\Test\template\images\lt02.jpg, 0.95",
+                    @"rt, D:\Test\template\images\lt03.jpg",
+                    @"rb, D:\Test\template\images\lt04.jpg",
+                    @"test, ""C:\aaa, 0.55"", 0.98"
+                }
+            }
+        }
     }
 };
 
-using (var checker = new ScreenChecker(list, true))
-{
-    checker.LocateOnScreen();
-}
+
+var serializer = new SerializerBuilder().
+    WithEmissionPhaseObjectGraphVisitor(x => new YamlIEnumerableSkipEmptyObjectGraphVisitor(x.InnerVisitor)).
+    Build();
+serializer.Serialize(Console.Out, flow);
+
+
+//string yaml = new Serializer().Serialize(flow);
+//Console.WriteLine(yaml);
+
 
 Console.ReadLine();
