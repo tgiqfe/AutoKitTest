@@ -12,6 +12,9 @@ namespace AutoKitTest.Lib.Manifest
         [YamlIgnore]
         public string Name { get; set; }
 
+        [YamlIgnore]
+        public Commands Type { get; set; }
+
         #region General parameter
 
         public int? Timeout { get; set; }

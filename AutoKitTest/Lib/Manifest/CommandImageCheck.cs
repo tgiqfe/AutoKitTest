@@ -47,20 +47,28 @@ namespace AutoKitTest.Lib.Manifest
 
         public bool Execute()
         {
-            using (var checker = new ScreenChecker())
+            DateTime startTime = DateTime.Now;
+            while ((DateTime.Now - startTime).TotalMilliseconds < (this.Timeout ?? _defaultTimeout))
             {
-                foreach (var item in this.ImageItems)
+                using (var checker = new ScreenChecker())
                 {
-                    var imageCheckResult = checker.LocateOnScreen(item.Path, item.Threshold);
-                    this.Fomula = this.Fomula.Replace("{" + item.Tag + "}", imageCheckResult.IsMatched.ToString());
+                    foreach (var item in this.ImageItems)
+                    {
+                        var imageCheckResult = checker.LocateOnScreen(item.Path, item.Threshold);
+                        this.Fomula = this.Fomula.Replace("{" + item.Tag + "}", imageCheckResult.IsMatched.ToString());
+                    }
                 }
+                try
+                {
+                    var answer = new NCalc.Expression(this.Fomula).Evaluate();
+                    if (answer is bool && (bool)answer)
+                    {
+                        return true;
+                    }
+                }
+                catch { }
+                Thread.Sleep(this.Interval ?? _defaultInterval);
             }
-            try
-            {
-                var answer = new NCalc.Expression(this.Fomula).Evaluate();
-                return (answer is bool) ? (bool)answer : false;
-            }
-            catch { }
 
             return false;
         }
