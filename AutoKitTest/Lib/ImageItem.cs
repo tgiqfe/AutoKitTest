@@ -9,6 +9,7 @@ namespace AutoKitTest.Lib
 {
     internal class ImageItem
     {
+        public string Tag { get; set; }
         public string Name { get { return System.IO.Path.GetFileName(this.Path); } }
         public string Path { get; set; }
         public double Threshold { get; set; }

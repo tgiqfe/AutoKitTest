@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YamlDotNet.Serialization;
 
 namespace AutoKitTest.Lib.Manifest
 {
@@ -13,5 +14,8 @@ namespace AutoKitTest.Lib.Manifest
         public string Description { get; set; }
 
         public Dictionary<string, TestCommand> Commands { get; set; }
+
+        [YamlIgnore]
+        public bool? Result { get; set; }
     }
 }

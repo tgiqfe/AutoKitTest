@@ -10,6 +10,7 @@ namespace AutoKitTest.Lib.Manifest
     {
         None,
         ImageCheck,
-        RunExe,
+        AppOpen,
+        AppClose,
     }
 }

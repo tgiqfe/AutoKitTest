@@ -16,6 +16,7 @@ namespace AutoKitTest.Lib.Manifest
 
         public int? Timeout { get; set; }
         public int? Interval { get; set; }
+        public bool? Debug { get; set; }
 
         #endregion
 

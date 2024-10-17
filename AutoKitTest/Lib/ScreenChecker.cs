@@ -5,16 +5,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace AutoKitTest.Lib
 {
     internal class ScreenChecker : IDisposable
     {
         private string _tempDir = Path.Combine(Item.WorkDir, "result");
-        private Bitmap _screenCapture = null;
+
         private List<ImageItem> _templateImageItems = null;
         private bool _outputCheckedImage = false;
         private string _outputCheckedFilePath = null;
+
+
+
+
+        private Bitmap _screenCapture = null;
+        private Mat _screen = null;
+        public ScreenChecker()
+        {
+            _screenCapture = ScreenCapture.FullScreen();
+            _screen = BitmapConverter.ToMat(_screenCapture);
+        }
+
+
 
         public ScreenChecker(List<ImageItem> templateImageItems, bool outputCheckedImage = false)
         {
@@ -32,6 +46,41 @@ namespace AutoKitTest.Lib
             }
 
             _screenCapture = ScreenCapture.FullScreen();
+        }
+
+        public ImageCheckResult LocateOnScreen(string path, double threshold)
+        {
+            ImageCheckResult imageCheckResult = new();
+
+            using (Mat template = new(path, ImreadModes.Unchanged))
+            using (Mat result = new Mat())
+            {
+                if (template.Type() == MatType.CV_8UC4)
+                {
+                    Cv2.CvtColor(template, template, ColorConversionCodes.BGRA2BGR);
+                }
+                if (template.Depth() != MatType.CV_8UC3)
+                {
+                    template.ConvertTo(template, MatType.CV_8UC3);
+                }
+                Cv2.MatchTemplate(_screen, template, result, TemplateMatchModes.CCorrNormed);
+                OpenCvSharp.Point minLoc, maxLoc;
+                double minVal, maxVal;
+                Cv2.MinMaxLoc(result, out minVal, out maxVal, out minLoc, out maxLoc);
+
+                if (maxVal >= threshold)
+                {
+                    imageCheckResult.IsMatched = true;
+                    imageCheckResult.Location = maxLoc;
+                    imageCheckResult.Size = template.Size();
+                    imageCheckResult.RectAngle_X = maxLoc.X;
+                    imageCheckResult.RectAngle_Y = maxLoc.Y;
+                    imageCheckResult.RectAngle_Width = template.Width;
+                    imageCheckResult.RectAngle_Height = template.Height;
+                }
+            }
+
+            return imageCheckResult;
         }
 
         public void LocateOnScreen()
@@ -96,6 +145,7 @@ namespace AutoKitTest.Lib
             {
                 if (disposing && _screenCapture != null)
                 {
+                    _screen.Dispose();
                     _screenCapture.Dispose();
                 }
                 disposedValue = true;

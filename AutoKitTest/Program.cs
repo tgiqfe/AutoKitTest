@@ -42,5 +42,15 @@ serializer.Serialize(Console.Out, flow);
 
 
 
+var ret1 = new NCalc.Expression("1 + 2 + 3").Evaluate();
+var ret2 = new NCalc.Expression("{aaaa} && True && False").Evaluate();
+
+Console.WriteLine(ret1);
+Console.WriteLine(ret2);
+Console.WriteLine(ret1.GetType());
+Console.WriteLine(ret2.GetType());
+Console.WriteLine(ret1 is int);
+Console.WriteLine(ret2 is bool);
+
 
 Console.ReadLine();
