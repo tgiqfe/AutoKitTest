@@ -5,20 +5,20 @@ using System.Text.Json;
 using YamlDotNet.Serialization;
 
 
-TestFlows2 flow = new TestFlows2()
+TestFlows flow = new TestFlows()
 {
-    Name = "TestFlow",
-    Description = "Test Flow Description",
-    Commands = new Dictionary<string, TestCommand2>()
+    Name = "Adobe Reader",
+    Description = "Test Adobe Reader.",
+    Commands = new Dictionary<string, TestCommand>()
     {
         {
-            "起動チェック [ImageCheck]",
-            new TestCommand2()
+            "起動チェック[ImageCheck]",
+            new TestCommand()
             {
                 Name = "Command1",
                 Threshould = 0.98,
-                ImageCheckInterval = 1000,
-                ImageCheckTimeout = 10000,
+                Interval = 1000,
+                Timeout = 10000,
                 Fomula = "{lt} && {lb} && {rt} && {rb}",
                 ImageCheck = new List<string>()
                 {
@@ -35,13 +35,12 @@ TestFlows2 flow = new TestFlows2()
 
 
 var serializer = new SerializerBuilder().
+    WithEventEmitter(x => new MultilineScalarFlowStyleEmitter(x)).
     WithEmissionPhaseObjectGraphVisitor(x => new YamlIEnumerableSkipEmptyObjectGraphVisitor(x.InnerVisitor)).
     Build();
 serializer.Serialize(Console.Out, flow);
 
 
-//string yaml = new Serializer().Serialize(flow);
-//Console.WriteLine(yaml);
 
 
 Console.ReadLine();
