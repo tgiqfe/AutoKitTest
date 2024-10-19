@@ -1,0 +1,13 @@
+Name: Adobe Reader
+Description: Test Adobe Reader.
+Commands:
+  起動チェック[ImageCheck]:
+    Timeout: 10000
+    Interval: 1000
+    Threshould: 0.98
+    Fomula: '{lt} && {lb} && {rt} && {rb}'
+    ImageCheck:
+    - lt, D:\Test\Images\lt.jpg, 0.99
+    - lb, D:\Test\Images\lb.jpg, 0.95
+    - rt, D:\Test\Images\rt.jpg
+    - rb, D:\Test\Images\rb.jpg

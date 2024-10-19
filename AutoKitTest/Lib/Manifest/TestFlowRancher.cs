@@ -1,11 +1,10 @@
-﻿using AutoKitTest.Lib.Manifest;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AutoKitTest.Lib
+namespace AutoKitTest.Lib.Manifest
 {
     internal class TestFlowRancher
     {
@@ -13,12 +12,12 @@ namespace AutoKitTest.Lib
 
         public TestFlowRancher(TestFlows testFlows)
         {
-            this._testFlows = testFlows;
+            _testFlows = testFlows;
         }
 
         public void Execute()
         {
-            foreach(var command in this._testFlows.Commands)
+            foreach (var command in _testFlows.Commands)
             {
                 var testCommand = command.Value;
                 switch (testCommand.Type)

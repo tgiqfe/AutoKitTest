@@ -12,5 +12,6 @@ namespace AutoKitTest.Lib.Manifest
         ImageCheck,
         AppOpen,
         AppClose,
+        Click,
     }
 }
