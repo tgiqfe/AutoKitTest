@@ -68,7 +68,9 @@ namespace AutoKitTest.Lib.Manifest
                             break;
                         case CommandType.Click:
                             break;
-                        default:
+                        case CommandType.Wait:
+                            var wait = new CommandWait(testCommand);
+                            ret_command = wait.Execute();
                             break;
                     }
                     if (!ret_command && testCommand.Failed == FailedAction.Quit)

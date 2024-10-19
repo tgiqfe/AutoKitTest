@@ -36,7 +36,7 @@ namespace AutoKitTest.Lib.Manifest
             this.Enabled = ret;
         }
 
-        public bool Esecute()
+        public bool Execute()
         {
             if (!this.Enabled) return false;
 
