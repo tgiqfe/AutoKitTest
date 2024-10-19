@@ -37,5 +37,26 @@ namespace AutoKitTest.Lib.Manifest
                 }
             }
         }
+
+        public void ExecuteCommand()
+        {
+            foreach (var command in this.Commands)
+            {
+                switch (command.Value.Type)
+                {
+                    case Manifest.Commands.ImageCheck:
+                        var imagecheck = new CommandImageCheck(command.Value);
+                        this.Result = imagecheck.Execute();
+                        Console.WriteLine(this.Result);
+                        break;
+                    case Manifest.Commands.AppOpen:
+                        break;
+                    case Manifest.Commands.AppClose:
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
     }
 }

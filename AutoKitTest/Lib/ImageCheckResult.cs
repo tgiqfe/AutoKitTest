@@ -4,6 +4,7 @@
     {
         public bool IsMatched { get; set; }
 
+        public string Name { get; set; }
         public OpenCvSharp.Point Location { get; set; }
         public OpenCvSharp.Size Size { get; set; }
         public int RectAngle_X { get; set; }

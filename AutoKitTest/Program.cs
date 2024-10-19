@@ -1,6 +1,7 @@
 ﻿using AutoKitTest.Lib;
 using AutoKitTest.Lib.Manifest;
 using AutoKitTest.Lib.Yaml;
+using OpenCvSharp;
 using System.Text.Json;
 using YamlDotNet.Serialization;
 
@@ -22,11 +23,10 @@ TestFlows flow = new TestFlows()
                 Fomula = "{lt} && {lb} && {rt} && {rb}",
                 ImageCheck = new List<string>()
                 {
-                    @"lt, D:\Test\template\images\lt01.jpg, 0.99",
-                    @"lb, D:\Test\template\images\lt02.jpg, 0.95",
-                    @"rt, D:\Test\template\images\lt03.jpg",
-                    @"rb, D:\Test\template\images\lt04.jpg",
-                    @"test, ""C:\aaa, 0.55"", 0.98"
+                    @"lt, D:\Test\Images\lt.jpg, 0.99",
+                    @"lb, D:\Test\Images\lb.jpg, 0.95",
+                    @"rt, D:\Test\Images\rt.jpg",
+                    @"rb, D:\Test\Images\rb.jpg"
                 }
             }
         }
@@ -42,15 +42,32 @@ serializer.Serialize(Console.Out, flow);
 
 
 
-var ret1 = new NCalc.Expression("1 + 2 + 3").Evaluate();
-var ret2 = new NCalc.Expression("{aaaa} && True && False").Evaluate();
 
-Console.WriteLine(ret1);
-Console.WriteLine(ret2);
-Console.WriteLine(ret1.GetType());
-Console.WriteLine(ret2.GetType());
-Console.WriteLine(ret1 is int);
-Console.WriteLine(ret2 is bool);
+Thread.Sleep(3000);
+using (ScreenChecker2 checker = new ScreenChecker2())
+{
+    
+    ImageCheckResult result_lt = checker.LocateOnScreen("lt", @"D:\Test\Images\lt.jpg", 0.99);
+    checker.AddRect(result_lt);
+    ImageCheckResult result_lb = checker.LocateOnScreen("lb", @"D:\Test\Images\lb.jpg", 0.99);
+    checker.AddRect(result_lb);
+    ImageCheckResult result_rt = checker.LocateOnScreen("rt", @"D:\Test\Images\rt.jpg", 0.99);
+    checker.AddRect(result_rt);
+    ImageCheckResult result_rb = checker.LocateOnScreen("rb", @"D:\Test\Images\rb.jpg", 0.99);
+    checker.AddRect(result_rb);
+
+
+
+    checker.SaveScreen(@"D:\Test\Images\210540.png");
+
+    Console.WriteLine("画像一致: " + result_lt.IsMatched.ToString());
+    Console.WriteLine("画像一致: " + result_lb.IsMatched.ToString());
+    Console.WriteLine("画像一致: " + result_rt.IsMatched.ToString());
+    Console.WriteLine("画像一致: " + result_rb.IsMatched.ToString());
+
+}
+
+
 
 
 Console.ReadLine();

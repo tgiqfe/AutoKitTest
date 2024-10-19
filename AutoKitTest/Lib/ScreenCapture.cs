@@ -52,6 +52,7 @@ namespace AutoKitTest.Lib
 
         #endregion
 
+        
         /// <summary>
         /// Screenshot full display
         /// </summary>
