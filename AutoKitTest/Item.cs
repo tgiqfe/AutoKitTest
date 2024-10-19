@@ -9,13 +9,8 @@ namespace AutoKitTest
 {
     internal class Item
     {
-        public static readonly string WorkDir =
-            Path.Combine(Environment.ExpandEnvironmentVariables("%TEMP%"), "AutoKitTest");
-
-        public static readonly string ConfigFile =
-            Path.Combine(
-                Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName),
-                "setting.json");
+        public static readonly string WorkDirectory =
+            Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
 
     }
 }

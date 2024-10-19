@@ -1,0 +1,6 @@
+Name: Adobe Reader
+Description: Test Adobe Reader.
+Commands:
+  起動[AppOpen]:
+    Exe: C:\Program Files\Google\Chrome\Application\chrome.exe
+    Args: https://www.yahoo.co.jp

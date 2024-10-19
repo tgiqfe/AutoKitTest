@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using YamlDotNet.Serialization;
 
 namespace AutoKitTest.Lib.Manifest
@@ -13,7 +9,7 @@ namespace AutoKitTest.Lib.Manifest
         public string Name { get; set; }
 
         [YamlIgnore]
-        public Commands Type { get; set; }
+        public CommandType Type { get; set; }
 
         #region General parameter
 
@@ -21,24 +17,35 @@ namespace AutoKitTest.Lib.Manifest
         public int? Interval { get; set; }
         public bool? Debug { get; set; }
 
+        [YamlMember(Alias = "Failed")]
+        public FailedAction? Failed { get; set; }
+
         #endregion
 
-        #region StartApp
+        #region for AppOpen
 
+        [YamlMember(Alias = "Exe")]
         public string ApplicationPath { get; set; }
+
+        [YamlMember(Alias = "Args")]
         public string Arguments { get; set; }
+
+        [YamlMember(Alias = "Work")]
         public string WorkingDirectory { get; set; }
 
+        public string WindowStyle { get; set; }
 
         #endregion
-        #region ImageCheck
+        #region for ImageCheck
 
         public double? Threshould { get; set; }
         public string Fomula { get; set; }
+
+        [YamlMember(Alias = "Images")]
         public List<string> ImageCheck { get; set; }
 
         #endregion
-        
+
 
     }
 }

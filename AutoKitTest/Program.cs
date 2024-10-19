@@ -1,11 +1,11 @@
-﻿using AutoKitTest.Lib;
-using AutoKitTest.Lib.Manifest;
+﻿using AutoKitTest.Lib.Manifest;
 using AutoKitTest.Lib.Yaml;
-using System.Text.Json;
+using System.Diagnostics;
 using YamlDotNet.Serialization;
 
 
-TestFlows flow = new TestFlows()
+/*
+TestScene flow = new TestScene()
 {
     Name = "Adobe Reader",
     Description = "Test Adobe Reader.",
@@ -22,35 +22,66 @@ TestFlows flow = new TestFlows()
                 Fomula = "{lt} && {lb} && {rt} && {rb}",
                 ImageCheck = new List<string>()
                 {
-                    @"lt, D:\Test\template\images\lt01.jpg, 0.99",
-                    @"lb, D:\Test\template\images\lt02.jpg, 0.95",
-                    @"rt, D:\Test\template\images\lt03.jpg",
-                    @"rb, D:\Test\template\images\lt04.jpg",
-                    @"test, ""C:\aaa, 0.55"", 0.98"
+                    @"lt, D:\Test\Images\lt.jpg, 0.99",
+                    @"lb, D:\Test\Images\lb.jpg, 0.95",
+                    @"rt, D:\Test\Images\rt.jpg",
+                    @"rb, D:\Test\Images\rb.jpg"
                 }
+            }
+        }
+    }
+};
+*/
+
+/*
+TestScene flow = new TestScene()
+{
+    Name = "Adobe Reader",
+    Description = "Test Adobe Reader.",
+    Commands = new Dictionary<string, TestCommand>()
+    {
+        {
+            "起動[AppOpen]",
+            new TestCommand()
+            {
+                Name = "Open",
+                ApplicationPath = @"C:\Program Files\Google\Chrome\Application\chrome.exe",
+                Arguments = "https://www.yahoo.co.jp"
+            }
+        }
+    }
+};
+*/
+
+TestScene scenes = new TestScene()
+{
+    Name = "Adobe Reader",
+    Description = "Test Adobe Reader.",
+    Commands = new Dictionary<string, TestCommand>()
+    {
+        {
+            "5秒待機[Wait]",
+            new TestCommand()
+            {
+                Timeout = 5000,
             }
         }
     }
 };
 
 
+//var scenes = new TestSceneCluster();
+//scenes.LoadSettingFiles();
+
 var serializer = new SerializerBuilder().
     WithEventEmitter(x => new MultilineScalarFlowStyleEmitter(x)).
     WithEmissionPhaseObjectGraphVisitor(x => new YamlIEnumerableSkipEmptyObjectGraphVisitor(x.InnerVisitor)).
     Build();
-serializer.Serialize(Console.Out, flow);
+serializer.Serialize(Console.Out, scenes);
 
 
+scenes.Execute();
 
-var ret1 = new NCalc.Expression("1 + 2 + 3").Evaluate();
-var ret2 = new NCalc.Expression("{aaaa} && True && False").Evaluate();
-
-Console.WriteLine(ret1);
-Console.WriteLine(ret2);
-Console.WriteLine(ret1.GetType());
-Console.WriteLine(ret2.GetType());
-Console.WriteLine(ret1 is int);
-Console.WriteLine(ret2 is bool);
 
 
 Console.ReadLine();
