@@ -9,7 +9,7 @@ namespace AutoKitTest
 {
     internal class Item
     {
-        public static readonly string WorkDir =
+        public static readonly string WorkDirectory =
             Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
 
     }

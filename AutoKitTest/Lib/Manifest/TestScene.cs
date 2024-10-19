@@ -12,7 +12,6 @@ namespace AutoKitTest.Lib.Manifest
 {
     internal class TestScene
     {
-        private static readonly string _testFlowsDir = Path.Combine(Item.WorkDir, "TestScene");
         private Regex _typePattern = new Regex(@"\[[^\[\]]+\]$");
 
         public string Name { get; set; }
@@ -26,13 +25,13 @@ namespace AutoKitTest.Lib.Manifest
         /// Load
         /// </summary>
         /// <returns></returns>
-        public static List<TestScene> Load()
+        public static List<TestScene> Load(string targetDir)
         {
             List<TestScene> list = new();
 
-            if (!Directory.Exists(_testFlowsDir)) return list;
+            if (!Directory.Exists(targetDir)) return list;
             string[] extensions = { ".txt", ".yml", ".yaml" };
-            var settingFiles = Directory.GetFiles(_testFlowsDir).Where(x =>
+            var settingFiles = Directory.GetFiles(targetDir).Where(x =>
             {
                 string extension = Path.GetExtension(x);
                 return extensions.Any(y =>
@@ -51,17 +50,17 @@ namespace AutoKitTest.Lib.Manifest
         /// <summary>
         /// Save
         /// </summary>
-        public void Save()
+        public void Save(string targetDir)
         {
             var serializer = new SerializerBuilder().
                 WithEventEmitter(x => new MultilineScalarFlowStyleEmitter(x)).
                 WithEmissionPhaseObjectGraphVisitor(x => new YamlIEnumerableSkipEmptyObjectGraphVisitor(x.InnerVisitor)).
                 Build();
-            if(!Directory.Exists(_testFlowsDir))
+            if(!Directory.Exists(targetDir))
             {
-                Directory.CreateDirectory(_testFlowsDir);
+                Directory.CreateDirectory(targetDir);
             }
-            using (var writer = new StreamWriter(Path.Combine(_testFlowsDir, this.Name), false, Encoding.UTF8))
+            using (var writer = new StreamWriter(Path.Combine(targetDir, this.Name), false, Encoding.UTF8))
             {
                 serializer.Serialize(writer, this);
             }
@@ -77,12 +76,12 @@ namespace AutoKitTest.Lib.Manifest
                 if (_typePattern.IsMatch(command.Key))
                 {
                     command.Value.Name = _typePattern.Replace(command.Key, "").Trim();
-                    command.Value.Type = (Commands)Enum.Parse(typeof(Commands), _typePattern.Match(command.Key).Value.Trim('[', ']'));
+                    command.Value.Type = (CommandType)Enum.Parse(typeof(CommandType), _typePattern.Match(command.Key).Value.Trim('[', ']'));
                 }
                 else
                 {
                     command.Value.Name = command.Key;
-                    command.Value.Type = Manifest.Commands.None;
+                    command.Value.Type = Manifest.CommandType.None;
                 }
             }
         }
@@ -96,14 +95,14 @@ namespace AutoKitTest.Lib.Manifest
             {
                 switch (command.Value.Type)
                 {
-                    case Manifest.Commands.ImageCheck:
+                    case Manifest.CommandType.ImageCheck:
                         var imagecheck = new CommandImageCheck(command.Value);
                         this.Result = imagecheck.Execute();
                         Console.WriteLine(this.Result);
                         break;
-                    case Manifest.Commands.AppOpen:
+                    case Manifest.CommandType.AppOpen:
                         break;
-                    case Manifest.Commands.AppClose:
+                    case Manifest.CommandType.AppClose:
                         break;
                     default:
                         break;

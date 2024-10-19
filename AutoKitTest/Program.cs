@@ -33,10 +33,29 @@ TestScene flow = new TestScene()
         }
     }
 };
-
 */
 
-var flow = TestScene.Load();
+/*
+TestScene flow = new TestScene()
+{
+    Name = "Adobe Reader",
+    Description = "Test Adobe Reader.",
+    Commands = new Dictionary<string, TestCommand>()
+    {
+        {
+            "起動[AppOpen]",
+            new TestCommand()
+            {
+                Name = "Open",
+                ApplicationPath = @"C:\Program Files\Google\Chrome\Application\chrome.exe",
+                Arguments = "https://www.yahoo.co.jp"
+            }
+        }
+    }
+};
+*/
+
+
 
 var serializer = new SerializerBuilder().
     WithEventEmitter(x => new MultilineScalarFlowStyleEmitter(x)).

@@ -12,23 +12,38 @@ namespace AutoKitTest.Lib.Manifest
             public double Threshold { get; set; }
         }
 
+        #region from TestCommand parameters
+
+        //  General parameter
         public string Name { get; set; }
-        public FailedAction Failed { get; set; } = FailedAction.Quit;
+        public FailedAction FailedAction { get; set; }
         public int? Timeout { get; set; }
         public int? Interval { get; set; }
+
+        //  for ImageCheck parameter
         public double? Threshould { get; set; }
         public string Fomula { get; set; }
         public List<ImageItem> ImageItems { get; set; }
 
+        #endregion
+
+        public bool Enabled { get; set; }
+
         private static Regex _sufPattern = new Regex(@",\s*[\d\.]+$");
+        private static Regex _fullpathPattern = new Regex(@"^([a-zA-Z]:\\)|(\\\\)");
+        private static readonly FailedAction _defaultFailedAction = FailedAction.Quit;
         const int _defaultTimeout = 10000;
         const int _defaultInterval = 1000;
         const double _defaultThreshould = 0.98;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="command"></param>
         public CommandImageCheck(TestCommand command)
         {
             this.Name = command.Name;
-            this.Failed = command.Failed ?? FailedAction.Quit;
+            this.FailedAction = command.Failed ?? _defaultFailedAction;
             this.Timeout = command.Timeout ?? _defaultTimeout;
             this.Interval = command.Interval ?? _defaultInterval;
             this.Threshould = command.Threshould ?? _defaultThreshould;
@@ -46,8 +61,25 @@ namespace AutoKitTest.Lib.Manifest
                     path = path.Substring(0, path.Length - suf.Length).Trim();
                     threshold = double.Parse(suf.TrimStart(',').Trim());
                 }
+                if (!_fullpathPattern.IsMatch(path))
+                {
+                    path = Path.Combine(Item.WorkDirectory, path);
+                }
                 return new ImageItem() { Tag = tag, Path = path, Threshold = threshold };
             }).Where(x => x != null).ToList();
+
+            ParameterCheck();
+        }
+
+        private void ParameterCheck()
+        {
+            var ret = true;
+            ret &= !string.IsNullOrEmpty(this.Fomula);
+            ret &= (this.ImageItems != null &&
+                this.ImageItems.Count > 0 &&
+                this.ImageItems.All(x => File.Exists(x.Path)));
+
+            this.Enabled = ret;
         }
 
         public bool Execute()

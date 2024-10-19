@@ -8,35 +8,48 @@ namespace AutoKitTest.Lib.Manifest
 {
     internal class TestSceneCluster
     {
-        private static readonly string _testFlowsDir = Path.Combine(Item.WorkDir, "TestScene");
+        private static readonly string _testFlowsDir = Path.Combine(Item.WorkDirectory, "TestScene");
 
         private List<TestScene> _sceneList = null;
 
-        private TestScene _testFlows = null;
+        public bool? TotalResult { get; set; }
 
-        public TestSceneCluster(TestScene testFlows)
+        public TestSceneCluster()
         {
-            _testFlows = testFlows;
+            this._sceneList = new List<TestScene>();
         }
 
         public void Execute()
         {
-            foreach (var command in _testFlows.Commands)
+            bool interrupt = false;
+            foreach (var scene in this._sceneList)
             {
-                var testCommand = command.Value;
-                switch (testCommand.Type)
+                var ret_command = false;
+                foreach (var command in scene.Commands)
                 {
-                    case Commands.ImageCheck:
-                        var imageCheck = new CommandImageCheck(command.Value);
-                        imageCheck.Execute();
+                    var testCommand = command.Value;
+                    switch (testCommand.Type)
+                    {
+                        case CommandType.ImageCheck:
+                            var imageCheck = new CommandImageCheck(testCommand);
+                            ret_command = imageCheck.Execute();
+                            break;
+                        case CommandType.AppOpen:
+                            break;
+                        case CommandType.AppClose:
+                            break;
+                        case CommandType.Click:
+                            break;
+                        default:
+                            break;
+                    }
+                    if (!ret_command && testCommand.Failed == FailedAction.Quit)
+                    {
+                        interrupt = true;
                         break;
-                    case Commands.AppOpen:
-                        break;
-                    case Commands.AppClose:
-                        break;
-                    default:
-                        break;
+                    }
                 }
+                if (interrupt) { break; }
             }
         }
     }
