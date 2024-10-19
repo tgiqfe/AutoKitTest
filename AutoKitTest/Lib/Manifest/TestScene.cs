@@ -12,7 +12,7 @@ namespace AutoKitTest.Lib.Manifest
 {
     internal class TestScene
     {
-        private Regex _typePattern = new Regex(@"\[[^\[\]]+\]$");
+        private static Regex _typePattern = new Regex(@"\[[^\[\]]+\]$");
 
         public string Name { get; set; }
         public string Description { get; set; }
@@ -47,20 +47,38 @@ namespace AutoKitTest.Lib.Manifest
             return list;
         }
 
+        public static TestScene Load2(string settingFile)
+        {
+            var yaml = File.ReadAllText(settingFile);
+            var testScene = new Deserializer().Deserialize<TestScene>(yaml);
+
+            foreach (var command in testScene.Commands)
+            {
+                if (_typePattern.IsMatch(command.Key))
+                {
+                    command.Value.Name = _typePattern.Replace(command.Key, "").Trim();
+                    command.Value.Type = (CommandType)Enum.Parse(typeof(CommandType), _typePattern.Match(command.Key).Value.Trim('[', ']'));
+                }
+                else
+                {
+                    command.Value.Name = command.Key;
+                    command.Value.Type = Manifest.CommandType.None;
+                }
+            }
+
+            return testScene;
+        }
+
         /// <summary>
         /// Save
         /// </summary>
-        public void Save(string targetDir)
+        public void Save(string settingFile)
         {
             var serializer = new SerializerBuilder().
                 WithEventEmitter(x => new MultilineScalarFlowStyleEmitter(x)).
                 WithEmissionPhaseObjectGraphVisitor(x => new YamlIEnumerableSkipEmptyObjectGraphVisitor(x.InnerVisitor)).
                 Build();
-            if(!Directory.Exists(targetDir))
-            {
-                Directory.CreateDirectory(targetDir);
-            }
-            using (var writer = new StreamWriter(Path.Combine(targetDir, this.Name), false, Encoding.UTF8))
+            using (var writer = new StreamWriter(settingFile, false, Encoding.UTF8))
             {
                 serializer.Serialize(writer, this);
             }

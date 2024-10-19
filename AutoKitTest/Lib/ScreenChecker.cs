@@ -10,12 +10,12 @@ using System.ComponentModel;
 
 namespace AutoKitTest.Lib
 {
-    internal class ScreenChecker2 : IDisposable
+    internal class ScreenChecker : IDisposable
     {
         private Bitmap _screenCapture = null;
         private Mat _screen = null;
 
-        public ScreenChecker2()
+        public ScreenChecker()
         {
             GetScreenCapture();
         }

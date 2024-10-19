@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using YamlDotNet.Serialization;
+﻿using YamlDotNet.Serialization;
 
 namespace AutoKitTest.Lib.Manifest
 {
@@ -42,6 +37,8 @@ namespace AutoKitTest.Lib.Manifest
 
         public double? Threshould { get; set; }
         public string Fomula { get; set; }
+
+        [YamlMember(Alias = "Images")]
         public List<string> ImageCheck { get; set; }
 
         #endregion

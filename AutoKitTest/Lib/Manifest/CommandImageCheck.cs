@@ -89,7 +89,7 @@ namespace AutoKitTest.Lib.Manifest
             {
                 string fomula = this.Fomula;
                 Console.WriteLine(DateTime.Now.ToString("[yyyyM/MM/dd HH:mm:ss]") + " " + this.Name + " is checking.");
-                using (var checker = new ScreenChecker2())
+                using (var checker = new ScreenChecker())
                 {
                     foreach (var item in this.ImageItems)
                     {
