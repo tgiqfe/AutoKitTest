@@ -21,6 +21,7 @@ namespace AutoKitTest.Lib.Manifest
         public string ApplicationPath { get; set; }
         public string Arguments { get; set; }
         public string WorkingDirectory { get; set; }
+        public ProcessWindowStyle WindowStyle { get; set; }
 
         #endregion
 
@@ -29,6 +30,7 @@ namespace AutoKitTest.Lib.Manifest
         private static Regex _fullpathPattern = new Regex(@"^([a-zA-Z]:\\)|(\\\\)");
         private static readonly FailedAction _defaultFailedAction = FailedAction.Quit;
         private static readonly string _defaultWorkingDirectory = Item.WorkDirectory;
+        private static readonly ProcessWindowStyle _defaultWindowStyle = ProcessWindowStyle.Normal;
 
         /// <summary>
         /// Constructor
@@ -41,6 +43,7 @@ namespace AutoKitTest.Lib.Manifest
             this.ApplicationPath = command.ApplicationPath;
             this.Arguments = command.Arguments;
             this.WorkingDirectory = command.WorkingDirectory ?? _defaultWorkingDirectory;
+            this.WindowStyle = Enum.TryParse(command.WindowStyle, out ProcessWindowStyle style) ? style : _defaultWindowStyle;
 
             if (!_fullpathPattern.IsMatch(ApplicationPath))
             {
@@ -64,11 +67,14 @@ namespace AutoKitTest.Lib.Manifest
 
         public bool Execute()
         {
+            if (!this.Enabled) return false;
+
             using (var proc = new Process())
             {
                 proc.StartInfo.FileName = this.ApplicationPath;
                 proc.StartInfo.Arguments = this.Arguments;
                 proc.StartInfo.WorkingDirectory = this.WorkingDirectory;
+                proc.StartInfo.WindowStyle = this.WindowStyle;
                 proc.StartInfo.CreateNoWindow = false;
                 proc.StartInfo.UseShellExecute = true;
                 proc.Start();

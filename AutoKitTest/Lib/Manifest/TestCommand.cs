@@ -1,4 +1,5 @@
-﻿using YamlDotNet.Serialization;
+﻿using System.Diagnostics;
+using YamlDotNet.Serialization;
 
 namespace AutoKitTest.Lib.Manifest
 {
@@ -31,6 +32,8 @@ namespace AutoKitTest.Lib.Manifest
 
         [YamlMember(Alias = "Work")]
         public string WorkingDirectory { get; set; }
+
+        public string WindowStyle { get; set; }
 
         #endregion
         #region for ImageCheck

@@ -17,11 +17,11 @@ namespace AutoKitTest.Lib.Manifest
         //  General parameter
         public string Name { get; set; }
         public FailedAction FailedAction { get; set; }
-        public int? Timeout { get; set; }
-        public int? Interval { get; set; }
+        public int Timeout { get; set; }
+        public int Interval { get; set; }
 
         //  for ImageCheck parameter
-        public double? Threshould { get; set; }
+        public double Threshould { get; set; }
         public string Fomula { get; set; }
         public List<ImageItem> ImageItems { get; set; }
 
@@ -54,7 +54,7 @@ namespace AutoKitTest.Lib.Manifest
                 if (!x.Contains(",")) { return null; }
                 string tag = x.Substring(0, x.IndexOf(","));
                 string path = x.Substring(x.IndexOf(",") + 1).Trim();
-                double threshold = (double)this.Threshould;
+                double threshold = this.Threshould;
                 if (_sufPattern.IsMatch(path))
                 {
                     string suf = _sufPattern.Match(path).Value;
@@ -84,8 +84,10 @@ namespace AutoKitTest.Lib.Manifest
 
         public bool Execute()
         {
+            if (!this.Enabled) return false;
+
             DateTime startTime = DateTime.Now;
-            while ((DateTime.Now - startTime).TotalMilliseconds < (this.Timeout ?? _defaultTimeout))
+            while ((DateTime.Now - startTime).TotalMilliseconds < this.Timeout)
             {
                 string fomula = this.Fomula;
                 Console.WriteLine(DateTime.Now.ToString("[yyyyM/MM/dd HH:mm:ss]") + " " + this.Name + " is checking.");
@@ -114,7 +116,7 @@ namespace AutoKitTest.Lib.Manifest
                     }
                 }
                 catch (Exception e) { Console.WriteLine(e); }
-                Thread.Sleep(this.Interval ?? _defaultInterval);
+                Thread.Sleep(this.Interval);
             }
 
             return false;

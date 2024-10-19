@@ -1,8 +1,6 @@
-﻿using AutoKitTest.Lib;
-using AutoKitTest.Lib.Manifest;
+﻿using AutoKitTest.Lib.Manifest;
 using AutoKitTest.Lib.Yaml;
-using OpenCvSharp;
-using System.Text.Json;
+using System.Diagnostics;
 using YamlDotNet.Serialization;
 
 
@@ -55,7 +53,25 @@ TestScene flow = new TestScene()
 };
 */
 
-var scenes = new TestSceneCluster();
+TestScene scenes = new TestScene()
+{
+    Name = "Adobe Reader",
+    Description = "Test Adobe Reader.",
+    Commands = new Dictionary<string, TestCommand>()
+    {
+        {
+            "5秒待機[Wait]",
+            new TestCommand()
+            {
+                Timeout = 5000,
+            }
+        }
+    }
+};
+
+
+//var scenes = new TestSceneCluster();
+//scenes.LoadSettingFiles();
 
 var serializer = new SerializerBuilder().
     WithEventEmitter(x => new MultilineScalarFlowStyleEmitter(x)).
@@ -63,8 +79,8 @@ var serializer = new SerializerBuilder().
     Build();
 serializer.Serialize(Console.Out, scenes);
 
-//flow.SetCommandType();
-//flow.ExecuteCommand();
+
+scenes.Execute();
 
 
 

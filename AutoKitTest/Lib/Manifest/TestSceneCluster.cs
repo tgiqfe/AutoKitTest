@@ -10,18 +10,14 @@ namespace AutoKitTest.Lib.Manifest
     {
         private static readonly string _testSceneDir = Path.Combine(Item.WorkDirectory, "TestScene");
 
-        private List<TestScene> _sceneList = null;
+        public List<TestScene> List = null;
 
         public bool? TotalResult { get; set; }
 
-        public TestSceneCluster()
-        {
 
-        }
-
-        private void LoadSettingFiles()
+        public void LoadSettingFiles()
         {
-            this._sceneList = new List<TestScene>();
+            this.List = new List<TestScene>();
 
             if (!Directory.Exists(_testSceneDir)) return;
             string[] extensions = { ".txt", ".yml", ".yaml" };
@@ -33,17 +29,17 @@ namespace AutoKitTest.Lib.Manifest
             });
             foreach (var file in settingFiles)
             {
-                _sceneList.Add(TestScene.Load2(file));
+                List.Add(TestScene.Load(file));
             }
         }
 
-        private void SaveSettingFiles()
+        public void SaveSettingFiles()
         {
             if (!Directory.Exists(_testSceneDir))
             {
                 Directory.CreateDirectory(_testSceneDir);
             }
-            foreach (var scene in _sceneList)
+            foreach (var scene in List)
             {
                 scene.Save(Path.Combine(_testSceneDir, scene.Name));
             }
@@ -52,7 +48,7 @@ namespace AutoKitTest.Lib.Manifest
         public void Execute()
         {
             bool interrupt = false;
-            foreach (var scene in this._sceneList)
+            foreach (var scene in this.List)
             {
                 var ret_command = false;
                 foreach (var command in scene.Commands)
