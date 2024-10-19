@@ -20,6 +20,7 @@ namespace AutoKitTest.Lib.Manifest
         public int? Timeout { get; set; }
         public int? Interval { get; set; }
         public bool? Debug { get; set; }
+        public FailedAction? Failed { get; set; }
 
         #endregion
 
@@ -28,7 +29,6 @@ namespace AutoKitTest.Lib.Manifest
         public string ApplicationPath { get; set; }
         public string Arguments { get; set; }
         public string WorkingDirectory { get; set; }
-
 
         #endregion
         #region ImageCheck

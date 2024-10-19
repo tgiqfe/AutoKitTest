@@ -6,11 +6,15 @@ using System.Threading.Tasks;
 
 namespace AutoKitTest.Lib.Manifest
 {
-    internal class TestFlowRancher
+    internal class TestSceneCluster
     {
+        private static readonly string _testFlowsDir = Path.Combine(Item.WorkDir, "TestScene");
+
+        private List<TestScene> _sceneList = null;
+
         private TestScene _testFlows = null;
 
-        public TestFlowRancher(TestScene testFlows)
+        public TestSceneCluster(TestScene testFlows)
         {
             _testFlows = testFlows;
         }

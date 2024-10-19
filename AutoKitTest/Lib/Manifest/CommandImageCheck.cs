@@ -13,6 +13,7 @@ namespace AutoKitTest.Lib.Manifest
         }
 
         public string Name { get; set; }
+        public FailedAction Failed { get; set; } = FailedAction.Quit;
         public int? Timeout { get; set; }
         public int? Interval { get; set; }
         public double? Threshould { get; set; }
@@ -27,6 +28,7 @@ namespace AutoKitTest.Lib.Manifest
         public CommandImageCheck(TestCommand command)
         {
             this.Name = command.Name;
+            this.Failed = command.Failed ?? FailedAction.Quit;
             this.Timeout = command.Timeout ?? _defaultTimeout;
             this.Interval = command.Interval ?? _defaultInterval;
             this.Threshould = command.Threshould ?? _defaultThreshould;

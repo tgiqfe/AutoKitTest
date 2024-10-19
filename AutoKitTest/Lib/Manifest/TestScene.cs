@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoKitTest.Lib.Yaml;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -21,6 +22,10 @@ namespace AutoKitTest.Lib.Manifest
         [YamlIgnore]
         public bool? Result { get; set; }
 
+        /// <summary>
+        /// Load
+        /// </summary>
+        /// <returns></returns>
         public static List<TestScene> Load()
         {
             List<TestScene> list = new();
@@ -41,6 +46,25 @@ namespace AutoKitTest.Lib.Manifest
                 list.Add(testScene);
             }
             return list;
+        }
+
+        /// <summary>
+        /// Save
+        /// </summary>
+        public void Save()
+        {
+            var serializer = new SerializerBuilder().
+                WithEventEmitter(x => new MultilineScalarFlowStyleEmitter(x)).
+                WithEmissionPhaseObjectGraphVisitor(x => new YamlIEnumerableSkipEmptyObjectGraphVisitor(x.InnerVisitor)).
+                Build();
+            if(!Directory.Exists(_testFlowsDir))
+            {
+                Directory.CreateDirectory(_testFlowsDir);
+            }
+            using (var writer = new StreamWriter(Path.Combine(_testFlowsDir, this.Name), false, Encoding.UTF8))
+            {
+                serializer.Serialize(writer, this);
+            }
         }
 
         /// <summary>
