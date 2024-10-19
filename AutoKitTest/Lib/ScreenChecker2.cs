@@ -35,14 +35,14 @@ namespace AutoKitTest.Lib
             _screen = BitmapConverter.ToMat(_screenCapture);
         }
 
-        public ImageCheckResult LocateOnScreen(string name, string path, double threshold)
+        public ImageCheckResult LocateOnScreen(string tag, string path, double threshold)
         {
             ImageCheckResult icresult = new();
 
             using (Mat template = new(path, ImreadModes.Unchanged))
             using (Mat result = new())
             {
-                Console.WriteLine(name + ": " + template.Type());
+                Console.WriteLine(tag + ": " + template.Type());
 
                 if (template.Type() == MatType.CV_8UC4)
                 {
@@ -57,7 +57,7 @@ namespace AutoKitTest.Lib
                     template.ConvertTo(template, MatType.CV_8UC3);
                 }
 
-                Console.WriteLine(name + ": " + template.Type());
+                Console.WriteLine(tag + ": " + template.Type());
 
                 Cv2.MatchTemplate(_screen, template, result, TemplateMatchModes.CCorrNormed);
                 OpenCvSharp.Point minLoc, maxLoc;
@@ -67,13 +67,9 @@ namespace AutoKitTest.Lib
                 if (maxVal >= threshold)
                 {
                     icresult.IsMatched = true;
-                    icresult.Name = name;
+                    icresult.Tag = tag;
                     icresult.Location = maxLoc;
                     icresult.Size = new OpenCvSharp.Size(template.Width, template.Height);
-                    icresult.RectAngle_X = maxLoc.X;
-                    icresult.RectAngle_Y = maxLoc.Y;
-                    icresult.RectAngle_Width = template.Width;
-                    icresult.RectAngle_Height = template.Height;
                 }
             }
             return icresult;
@@ -92,7 +88,7 @@ namespace AutoKitTest.Lib
                 {
                     point.Y += 25;
                 }
-                _screen.PutText(icresult.Name, point, HersheyFonts.HersheyDuplex, 1, Scalar.Lime);
+                _screen.PutText(icresult.Tag, point, HersheyFonts.HersheyDuplex, 1, Scalar.Lime);
             }
         }
 

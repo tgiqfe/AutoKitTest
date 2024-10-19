@@ -8,9 +8,9 @@ namespace AutoKitTest.Lib.Manifest
 {
     internal class TestFlowRancher
     {
-        private TestFlows _testFlows = null;
+        private TestScene _testFlows = null;
 
-        public TestFlowRancher(TestFlows testFlows)
+        public TestFlowRancher(TestScene testFlows)
         {
             _testFlows = testFlows;
         }

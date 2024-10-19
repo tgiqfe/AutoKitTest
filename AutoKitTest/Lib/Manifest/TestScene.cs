@@ -9,19 +9,44 @@ using YamlDotNet.Serialization;
 
 namespace AutoKitTest.Lib.Manifest
 {
-    internal class TestFlows
+    internal class TestScene
     {
+        private static readonly string _testFlowsDir = Path.Combine(Item.WorkDir, "TestScene");
+        private Regex _typePattern = new Regex(@"\[[^\[\]]+\]$");
+
         public string Name { get; set; }
         public string Description { get; set; }
-
         public Dictionary<string, TestCommand> Commands { get; set; }
 
         [YamlIgnore]
         public bool? Result { get; set; }
 
-        private Regex _typePattern = new Regex(@"\[[^\[\]]+\]$");
+        public static List<TestScene> Load()
+        {
+            List<TestScene> list = new();
 
-        public void SetCommandType()
+            if (!Directory.Exists(_testFlowsDir)) return list;
+            string[] extensions = { ".txt", ".yml", ".yaml" };
+            var settingFiles = Directory.GetFiles(_testFlowsDir).Where(x =>
+            {
+                string extension = Path.GetExtension(x);
+                return extensions.Any(y =>
+                    extension.Equals(y, StringComparison.OrdinalIgnoreCase));
+            });
+            foreach (var file in settingFiles)
+            {
+                var yaml = File.ReadAllText(file);
+                var testScene = new Deserializer().Deserialize<TestScene>(yaml);
+                testScene.SetCommandType();
+                list.Add(testScene);
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// Load時にCommand部分を、Keyの記載から判定してTypeをセット
+        /// </summary>
+        private void SetCommandType()
         {
             foreach (var command in this.Commands)
             {
@@ -38,6 +63,9 @@ namespace AutoKitTest.Lib.Manifest
             }
         }
 
+        /// <summary>
+        /// Command部分を実行
+        /// </summary>
         public void ExecuteCommand()
         {
             foreach (var command in this.Commands)

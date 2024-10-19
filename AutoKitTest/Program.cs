@@ -6,7 +6,8 @@ using System.Text.Json;
 using YamlDotNet.Serialization;
 
 
-TestFlows flow = new TestFlows()
+/*
+TestScene flow = new TestScene()
 {
     Name = "Adobe Reader",
     Description = "Test Adobe Reader.",
@@ -33,6 +34,9 @@ TestFlows flow = new TestFlows()
     }
 };
 
+*/
+
+var flow = TestScene.Load();
 
 var serializer = new SerializerBuilder().
     WithEventEmitter(x => new MultilineScalarFlowStyleEmitter(x)).
@@ -40,13 +44,9 @@ var serializer = new SerializerBuilder().
     Build();
 serializer.Serialize(Console.Out, flow);
 
-flow.SetCommandType();
-flow.ExecuteCommand();
+//flow.SetCommandType();
+//flow.ExecuteCommand();
 
-string fomula = "True && True && True && True";
-NCalc.Expression exp = new(fomula);
-var ans = exp.Evaluate();
-Console.WriteLine(ans);
 
 
 /*
