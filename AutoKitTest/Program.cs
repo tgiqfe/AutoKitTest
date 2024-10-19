@@ -40,9 +40,16 @@ var serializer = new SerializerBuilder().
     Build();
 serializer.Serialize(Console.Out, flow);
 
+flow.SetCommandType();
+flow.ExecuteCommand();
+
+string fomula = "True && True && True && True";
+NCalc.Expression exp = new(fomula);
+var ans = exp.Evaluate();
+Console.WriteLine(ans);
 
 
-
+/*
 Thread.Sleep(3000);
 using (ScreenChecker2 checker = new ScreenChecker2())
 {
@@ -66,7 +73,7 @@ using (ScreenChecker2 checker = new ScreenChecker2())
     Console.WriteLine("画像一致: " + result_rb.IsMatched.ToString());
 
 }
-
+*/
 
 
 

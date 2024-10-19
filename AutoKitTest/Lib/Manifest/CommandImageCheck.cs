@@ -5,6 +5,13 @@ namespace AutoKitTest.Lib.Manifest
 {
     internal class CommandImageCheck
     {
+        internal class ImageItem
+        {
+            public string Tag { get; set; }
+            public string Path { get; set; }
+            public double Threshold { get; set; }
+        }
+
         public string Name { get; set; }
         public int? Timeout { get; set; }
         public int? Interval { get; set; }
@@ -28,20 +35,16 @@ namespace AutoKitTest.Lib.Manifest
             this.ImageItems = command.ImageCheck.Select(x =>
             {
                 if (!x.Contains(",")) { return null; }
-
                 string tag = x.Substring(0, x.IndexOf(","));
                 string path = x.Substring(x.IndexOf(",") + 1).Trim();
+                double threshold = (double)this.Threshould;
                 if (_sufPattern.IsMatch(path))
                 {
                     string suf = _sufPattern.Match(path).Value;
                     path = path.Substring(0, path.Length - suf.Length).Trim();
-                    double threshold = double.Parse(suf.TrimStart(',').Trim());
-                    return new ImageItem() { Tag = tag, Path = path, Threshold = threshold };
+                    threshold = double.Parse(suf.TrimStart(',').Trim());
                 }
-                else
-                {
-                    return new ImageItem() { Tag = tag, Path = path, Threshold = (double)this.Threshould };
-                }
+                return new ImageItem() { Tag = tag, Path = path, Threshold = threshold };
             }).Where(x => x != null).ToList();
         }
 
@@ -50,31 +53,33 @@ namespace AutoKitTest.Lib.Manifest
             DateTime startTime = DateTime.Now;
             while ((DateTime.Now - startTime).TotalMilliseconds < (this.Timeout ?? _defaultTimeout))
             {
+                string fomula = this.Fomula;
                 Console.WriteLine(DateTime.Now.ToString("[yyyyM/MM/dd HH:mm:ss]") + " " + this.Name + " is checking.");
-                using (var checker = new ScreenChecker())
+                using (var checker = new ScreenChecker2())
                 {
                     foreach (var item in this.ImageItems)
                     {
-                        var imageCheckResult = checker.LocateOnScreen(this.Name, item.Path, item.Threshold);
-                        this.Fomula = this.Fomula.Replace("{" + item.Tag + "}", imageCheckResult.IsMatched.ToString());
+                        var imageCheckResult = checker.LocateOnScreen(item.Tag, item.Path, item.Threshold);
+                        fomula = fomula.Replace("{" + item.Tag + "}", imageCheckResult.IsMatched.ToString());
 
                         Console.WriteLine("Image match: " + imageCheckResult.IsMatched.ToString());
                         checker.AddRect(imageCheckResult);
                     }
-                    
+
                     checker.SaveScreen(@"D:\Test\Images\" + DateTime.Now.ToString("HHmmss") + ".png");
                 }
                 try
                 {
-                    var answer = new NCalc.Expression(this.Fomula).Evaluate();
-                    Console.WriteLine(this.Fomula + " => " + answer);
+                    var answer = new NCalc.Expression(fomula).Evaluate();
+                    Console.WriteLine(fomula + " => " + answer);
+                    Console.WriteLine("全体: " + answer.ToString());
 
                     if (answer is bool && (bool)answer)
                     {
                         return true;
                     }
                 }
-                catch { }
+                catch (Exception e) { Console.WriteLine(e); }
                 Thread.Sleep(this.Interval ?? _defaultInterval);
             }
 

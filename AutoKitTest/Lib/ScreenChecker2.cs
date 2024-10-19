@@ -15,8 +15,6 @@ namespace AutoKitTest.Lib
         private Bitmap _screenCapture = null;
         private Mat _screen = null;
 
-
-
         public ScreenChecker2()
         {
             GetScreenCapture();
