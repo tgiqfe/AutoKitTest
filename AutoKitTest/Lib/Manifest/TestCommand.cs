@@ -45,7 +45,12 @@ namespace AutoKitTest.Lib.Manifest
         public List<string> ImageCheck { get; set; }
 
         #endregion
+        #region for OpenFolder / CloseFolder
 
+        public string OpenFolder { get; set; }
+        public string SelectItem { get; set; }
+        public string CloseFolder { get; set; }
 
+        #endregion
     }
 }

@@ -14,7 +14,6 @@ namespace AutoKitTest.Lib.Manifest
 
         public bool? TotalResult { get; set; }
 
-
         public void LoadSettingFiles()
         {
             this.List = new List<TestScene>();
@@ -71,6 +70,12 @@ namespace AutoKitTest.Lib.Manifest
                         case CommandType.Wait:
                             var wait = new CommandWait(testCommand);
                             ret_command = wait.Execute();
+                            break;
+                        case CommandType.ScreenShot:
+                            break;
+                        case CommandType.FolderOpen:
+                            break;
+                        case CommandType.FolderClose:
                             break;
                     }
                     if (!ret_command && testCommand.Failed == FailedAction.Quit)

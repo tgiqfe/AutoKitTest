@@ -12,5 +12,8 @@
         Click,          //  特定の場所をクリック
         Run,            //  指定のスクリプト文を実行
         Wait,           //  指定時間待機
+        ScreenShot,     //  スクリーンショットを撮影
+        FolderOpen,     //  フォルダを開く
+        FolderClose,    //  フォルダを閉じる
     }
 }
