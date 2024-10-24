@@ -75,6 +75,8 @@ namespace AutoKitTest.Lib.Manifest
                             break;
                         case CommandType.FolderOpen:
                             break;
+                        case CommandType.FolderClose:
+                            break;
                     }
                     if (!ret_command && testCommand.Failed == FailedAction.Quit)
                     {
