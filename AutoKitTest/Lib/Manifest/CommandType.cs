@@ -14,5 +14,6 @@
         Wait,           //  指定時間待機
         ScreenShot,     //  スクリーンショットを撮影
         FolderOpen,     //  フォルダを開く
+        FolderClose,    //  フォルダを閉じる
     }
 }

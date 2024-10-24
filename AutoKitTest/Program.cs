@@ -21,7 +21,7 @@ cluster.List = new List<TestScene>()
                     Fomula = "{001}",
                     ImageCheck = new()
                     {
-                        @"001, D:\Test\Images\aaaa.jpg"
+                        @"001, D:\Test\Images\aaaa.jpg",
                     }
                 }
             }
